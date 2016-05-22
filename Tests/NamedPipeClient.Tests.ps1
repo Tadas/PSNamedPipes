@@ -55,7 +55,7 @@ Describe "NamedPipeClient" {
 		$ServerJob = Start-Job -ScriptBlock $JobScriptBlock -ArgumentList $PipeName
 		
 		$Client = New-NamedPipeClient $PipeName
-		$Client.Connect(2000); # What is the correct async way to do this???
+		$Client.Connect(30000); # What is the correct async way to do this???
 		$Client.BeginRead({
 			Param(
 				[string]$Message,
@@ -103,7 +103,7 @@ Describe "NamedPipeClient" {
 		$ServerJob = Start-Job -ScriptBlock $JobScriptBlock -ArgumentList $PipeName
 		
 		$Client = New-NamedPipeClient $PipeName
-		$Client.Connect(2000); # What is the correct async way to do this???
+		$Client.Connect(30000); # What is the correct async way to do this???
 		
 		$Client.BeginWrite("$TestMessage`n"); # ReadLine needs a line ending
 		$Client.BeginRead({

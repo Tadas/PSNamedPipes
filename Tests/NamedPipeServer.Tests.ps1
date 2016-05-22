@@ -34,15 +34,15 @@ Describe "NamedPipeServer" {
 				[String]$PipeName
 			)
 			$ClientPipe = New-Object System.IO.Pipes.NamedPipeClientStream($PipeName)
-			$ClientPipe.Connect(1000)
+			$ClientPipe.Connect(30000)
 			$ClientPipe.Close()
 		}
 		$ClientJob = Start-Job -ScriptBlock $JobScriptBlock -ArgumentList $PipeName
 	
 		# We have to spin for a bit. If we issue a one long WaitOne() call this thread will be blocked and the event handler 
 		# will get called only after the event times out (which is not correct)
-		for($i = 0; $i -lt 100; $i++){
-			$ConnectedEventWasSet = $WaitForConnectionEvent.WaitOne(10);
+		for($i = 0; $i -lt 300; $i++){
+			$ConnectedEventWasSet = $WaitForConnectionEvent.WaitOne(100);
 			if ($ConnectedEventWasSet) { break }
 		}
 		
@@ -65,7 +65,7 @@ Describe "NamedPipeServer" {
 				[String]$PipeName
 			)
 			$ClientPipe = New-Object System.IO.Pipes.NamedPipeClientStream($PipeName)
-			$ClientPipe.Connect(1000)
+			$ClientPipe.Connect(30000)
 
 			$ClientWriter = New-Object System.IO.StreamWriter($ClientPipe)
 			$ClientWriter.AutoFlush = $true
@@ -90,8 +90,8 @@ Describe "NamedPipeServer" {
 
 
 		# We have to spin for a bit, if we issue a one long WaitOne() call the event handler might not get called due to thread timing
-		for($i = 0; $i -lt 100; $i++){
-			$DataEventWasSet = $RepliedWithDataEvent.WaitOne(10);
+		for($i = 0; $i -lt 300; $i++){
+			$DataEventWasSet = $RepliedWithDataEvent.WaitOne(100);
 			if ($DataEventWasSet) { break }
 		}
 		$DataEventWasSet | Should Be $True
@@ -116,7 +116,7 @@ Describe "NamedPipeServer" {
 				[String]$PipeName
 			)
 			$ClientPipe = New-Object System.IO.Pipes.NamedPipeClientStream($PipeName)
-			$ClientPipe.Connect(1000)
+			$ClientPipe.Connect(30000)
 
 			$ClientReader = New-Object System.IO.StreamReader($ClientPipe, [System.Text.Encoding]::UTF8); 
 			$Message = $ClientReader.ReadLine()
@@ -132,8 +132,8 @@ Describe "NamedPipeServer" {
 
 		# We have to spin for a bit. If we issue a one long WaitOne() call this thread will be blocked and the event handler 
 		# will get called only after the event times out (which is not correct)
-		for($i = 0; $i -lt 200; $i++){
-			$ConnectedEventWasSet = $WaitForConnectionEvent.WaitOne(10);
+		for($i = 0; $i -lt 300; $i++){
+			$ConnectedEventWasSet = $WaitForConnectionEvent.WaitOne(100);
 			if ($ConnectedEventWasSet) { break }
 		}
 		$ConnectedEventWasSet | Should Be $True
@@ -152,8 +152,8 @@ Describe "NamedPipeServer" {
 
 		# We have to spin for a bit. If we issue a one long WaitOne() call this thread will be blocked and the event handler 
 		# will get called only after the event times out (which is not correct)
-		for($i = 0; $i -lt 200; $i++){
-			$DataEventWasSet = $RepliedWithDataEvent.WaitOne(10);
+		for($i = 0; $i -lt 300; $i++){
+			$DataEventWasSet = $RepliedWithDataEvent.WaitOne(100);
 			if ($DataEventWasSet) { break }
 		}
 		$ClientJob | Remove-Job -Force
