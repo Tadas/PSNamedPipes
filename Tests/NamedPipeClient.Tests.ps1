@@ -1,5 +1,5 @@
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
-Import-Module "$here\..\NamedPipes.psm1" -Force
+Import-Module "$here\..\PSNamedPipes.psm1" -Force
 
 Describe "NamedPipeClient" {
 	It "New-NamedPipeClient returns a [NamedPipeClient]"{
