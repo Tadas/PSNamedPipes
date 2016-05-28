@@ -9,6 +9,13 @@ Describe "NamedPipeServer" {
 		$a.GetType().FullName | Should Be "NamedPipeServer"
 	}
 	
+	It "sets the pipe name" {
+		$PipeName = "NamedPipeServer-Test-$((Get-Date).ToFileTime())"
+		$a = New-NamedPipeServer $PipeName
+		$a.Close()
+		$a.GetPipeName() | Should Be $PipeName
+	}
+	
 	
 	It "closes the pipe" {
 		$PipeName = "NamedPipeServer-Test-$((Get-Date).ToFileTime())"

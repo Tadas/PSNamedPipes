@@ -15,6 +15,19 @@ Describe "NamedPipeClient" {
 		$Client.GetType().FullName | Should Be "NamedPipeClient"
 	}
 	
+	It "sets the pipe name"{
+		$PipeName = "NamedPipeClient-Test-$((Get-Date).ToFileTime())"
+		
+		# We need to open a pipe server before we can create a client
+		$serverPipe = New-Object System.IO.Pipes.NamedPipeServerStream $PipeName, InOut, 1, Byte, Asynchronous, 1024, 1024
+		
+		$Client = New-NamedPipeClient $PipeName
+		$Client.Close()
+		
+		$serverPipe.Close()
+		$Client.GetPipeName() | Should Be $PipeName
+	}
+	
 	
 	It "closes the pipe" {
 		$PipeName = "NamedPipeClient-Test-$((Get-Date).ToFileTime())"

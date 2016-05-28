@@ -19,6 +19,7 @@ if (-not ("CallbackEventBridge" -as [type])) {
 
 class NamedPipeServer {
 
+	hidden $_pipeName = "";
 	hidden [System.IO.Pipes.NamedPipeServerStream]$_serverPipe = $null;
 	hidden $_readBuffer = $null;
 
@@ -33,6 +34,7 @@ class NamedPipeServer {
 
 	# Constructor
 	NamedPipeServer ([string]$PipeName){
+		$this._pipeName = $PipeName
 		$this._readBuffer = New-Object byte[] 1024
 		$this._serverPipe = New-Object System.IO.Pipes.NamedPipeServerStream $PipeName, InOut, 1, Byte, Asynchronous, 1024, 1024
 		
@@ -109,6 +111,10 @@ class NamedPipeServer {
 	[Boolean] IsConnected(){
 		return $this._serverPipe.IsConnected
 	}
+	
+	[string] GetPipeName(){
+		return $this._pipeName
+	}
 
 	Close (){
 		$this._serverPipe.Close();
@@ -116,6 +122,7 @@ class NamedPipeServer {
 }
 
 class NamedPipeClient{
+	hidden $_pipeName = "";
 	hidden [System.IO.Pipes.NamedPipeClientStream]$_clientPipe = $null;
 	hidden $_readBuffer = $null;
 	
@@ -126,6 +133,7 @@ class NamedPipeClient{
 	
 	
 	NamedPipeClient ([string]$PipeName){
+		$this._pipeName = $PipeName
 		[string]$PipeServer = "."
 		$this._readBuffer = New-Object byte[] 1024
 		$this._clientPipe = New-Object System.IO.Pipes.NamedPipeClientStream $PipeServer, $PipeName, InOut, Asynchronous
@@ -178,6 +186,10 @@ class NamedPipeClient{
 	
 	Connect(){
 		$this._clientPipe.Connect(100);
+	}
+	
+	[string] GetPipeName(){
+		return $this._pipeName
 	}
 	
 	Close (){
