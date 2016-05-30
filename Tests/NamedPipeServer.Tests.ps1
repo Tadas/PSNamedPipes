@@ -30,10 +30,13 @@ Describe "NamedPipeServer" {
 	It "calls the OnConnected callback" {
 		$PipeName = "NamedPipeServer-Test-$((Get-Date).ToFileTime())"
 		$WaitForConnectionEvent = New-Object System.Threading.ManualResetEvent($false)
-		
+
 		$a = New-NamedPipeServer $PipeName
 		$a.BeginWaitForConnection({
-			$WaitForConnectionEvent.Set();
+			Param($ServerInstance)
+			if(($ServerInstance.GetPipeName()) -eq $PipeName){
+				$WaitForConnectionEvent.Set();
+			}
 		})
 
 		$JobScriptBlock = {

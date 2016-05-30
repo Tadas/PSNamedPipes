@@ -76,7 +76,7 @@ class NamedPipeServer {
 	}
 	hidden [void]OnClientConnected($asyncResult){
 		$this._serverPipe.EndWaitForConnection($asyncResult)
-		$this._OnConnectedScriptBlock.Invoke();
+		$this._OnConnectedScriptBlock.Invoke($this);
 	}
 
 
